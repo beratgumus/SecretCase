@@ -39,4 +39,10 @@ public class ShoppingCard {
     public void setCampaignDiscount(double campaignDiscount) {
         this.campaignDiscount = campaignDiscount;
     }
+
+    public double getTotalAmountAfterDiscounts() {
+        return this.getTotal() - (getCouponDiscount() + getCampaignDiscount());
+    }
+
+
 }
