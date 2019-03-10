@@ -7,8 +7,6 @@ import modals.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class ShoppingCartServiceImpl implements ShoppingCartService {
@@ -36,9 +34,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 
     // 'Cart should apply the maximum amount of discount to the cart'. Unclear explanation. 2 possible meaning:
-    // 1. Apply the campaign that maximize the discount among given campaigns (If a several campaign exists for one category).
+    // 1. Apply the campaign that maximize the discount among given campaigns for particular category. (If a several campaign exists for one category, select one of them)
     // 2. Apply all given campaigns to maximize the discount.
-    // I will go with number 2. Because different campaigns can exist for different categories.
+    // I will go with number 1. Because different campaigns can exist for different categories.
 
     // 'Campaign discount vary based on the number of products in the cart'. Unclear explanation. 2 possible meaning:
     // 1. It cares the number of product in the cart, not the  number of products belong to category
@@ -46,8 +44,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     // I will go with number 2 which makes more sense than number 1.
     @Override
     public void applyDiscounts(Campaign... campaigns) {
-        Map<Category, List<ShoppingCardItem>> categoryMap = shoppingCard.getItems().stream()
-                .collect(Collectors.groupingBy(o -> o.getProduct().getCategory()));
+        Map<Category, List<ShoppingCardItem>> categoryMap = groupByCategory(shoppingCard);
 
         Map<Category, List<Campaign>> campaignMap = Arrays.stream(campaigns)
                 .collect(Collectors.groupingBy(Campaign::getCategory));
@@ -114,11 +111,30 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public void print() {
+        Map<Category, List<ShoppingCardItem>> categoryMap = groupByCategory(shoppingCard);
+
+        for (Category category : categoryMap.keySet()) {
+            System.out.println("Category: " + category.getTitle());
+            categoryMap.get(category).forEach(item ->
+                    System.out.print("    " + "Product Name: " + item.getProduct().getTitle()
+                            + " Quantity: " + item.getQuantity()
+                            + " Unit Price: " + item.getProduct().getPrice()
+                    ));
+        }
+        System.out.println("Total Price: " + getTotalAmount());
+        System.out.println("Total Discount: " + getCampaignDiscount() + getCouponDiscount());
+        System.out.println("Total Amount: " + getTotalAmountAfterDiscounts());
+        System.out.println("Delivery Cost: " + getDeliveryCost());
 
     }
 
     @Override
     public double getTotalAmount() {
         return shoppingCard.getTotal();
+    }
+
+    public Map<Category, List<ShoppingCardItem>> groupByCategory(ShoppingCard shoppingCard) {
+        return shoppingCard.getItems().stream()
+                .collect(Collectors.groupingBy(o -> o.getProduct().getCategory()));
     }
 }
