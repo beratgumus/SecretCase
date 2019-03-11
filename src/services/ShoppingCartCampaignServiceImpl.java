@@ -2,18 +2,18 @@ package services;
 
 import exceptions.CampaignBeforeCouponException;
 import exceptions.CampaignDiscountOverflowException;
-import modals.*;
+import models.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ShoppingCardCampaignServiceImpl implements ShoppingCardCampaignService {
-    private ShoppingCard shoppingCard;
+public class ShoppingCartCampaignServiceImpl implements ShoppingCartCampaignService {
+    private ShoppingCart shoppingCart;
 
-    public ShoppingCardCampaignServiceImpl(ShoppingCard shoppingCard) {
-        this.shoppingCard = shoppingCard;
+    public ShoppingCartCampaignServiceImpl(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 
     // 'Cart should apply the maximum amount of discount to the cart'. Unclear explanation. 2 possible meaning:
@@ -27,10 +27,10 @@ public class ShoppingCardCampaignServiceImpl implements ShoppingCardCampaignServ
     // I will go with number 2 which makes more sense than number 1.
     @Override
     public void applyDiscounts(Campaign... campaigns) {
-        if (shoppingCard.getCouponDiscount() != 0)
+        if (shoppingCart.getCouponDiscount() != 0)
             throw new CampaignBeforeCouponException();
 
-        Map<Category, List<ShoppingCardItem>> categoryMap = shoppingCard.getItems().stream()
+        Map<Category, List<ShoppingCartItem>> categoryMap = shoppingCart.getItems().stream()
                 .collect(Collectors.groupingBy(o -> o.getProduct().getCategory()));
 
         Map<Category, List<Campaign>> campaignMap = Arrays.stream(campaigns)
@@ -38,8 +38,8 @@ public class ShoppingCardCampaignServiceImpl implements ShoppingCardCampaignServ
 
         double totalDiscount = 0;
         for (Category category : campaignMap.keySet()) {
-            int categoryQuantity = categoryMap.get(category).stream().mapToInt(ShoppingCardItem::getQuantity).sum();
             if (categoryMap.containsKey(category)) {
+                int categoryQuantity = categoryMap.get(category).stream().mapToInt(ShoppingCartItem::getQuantity).sum();
                 List<Campaign> validCampaigns = campaignMap.get(category).stream()
                         .filter(campaign -> categoryQuantity > campaign.getAmount())
                         .collect(Collectors.toList());
@@ -50,19 +50,20 @@ public class ShoppingCardCampaignServiceImpl implements ShoppingCardCampaignServ
                         maxDiscount = Math.max(maxDiscount, currentDiscount);
                     } else if (campaign.getDiscountType().equals(DiscountType.Rate)) {
                         double currentDiscount = 0;
-                        for (ShoppingCardItem item : categoryMap.get(category)) {
+                        for (ShoppingCartItem item : categoryMap.get(category)) {
                             currentDiscount += item.getProduct().getPrice() * (campaign.getDiscount() / 100) * item.getQuantity();
                             maxDiscount = Math.max(maxDiscount, currentDiscount);
                         }
                     }
-                    totalDiscount += maxDiscount;
                 }
+                totalDiscount += maxDiscount;
+
             }
 
         }
-        if (shoppingCard.getTotalAmountAfterDiscounts() - totalDiscount < 0)
+        if (shoppingCart.getTotalAmountAfterDiscounts() - totalDiscount < 0)
             throw new CampaignDiscountOverflowException();
         else
-            shoppingCard.setCampaignDiscount(shoppingCard.getCampaignDiscount() + totalDiscount);
+            shoppingCart.setCampaignDiscount(shoppingCart.getCampaignDiscount() + totalDiscount);
     }
 }

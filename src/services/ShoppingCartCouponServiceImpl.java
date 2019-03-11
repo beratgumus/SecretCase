@@ -1,20 +1,20 @@
 package services;
 
 import exceptions.CouponDiscountOverflowException;
-import modals.Coupon;
-import modals.DiscountType;
-import modals.ShoppingCard;
+import models.Coupon;
+import models.DiscountType;
+import models.ShoppingCart;
 
-public class ShoppingCardCouponServiceImpl implements ShoppingCardCouponService {
-    private ShoppingCard shoppingCard;
+public class ShoppingCartCouponServiceImpl implements ShoppingCartCouponService {
+    private ShoppingCart shoppingCart;
 
-    public ShoppingCardCouponServiceImpl(ShoppingCard shoppingCard) {
-        this.shoppingCard = shoppingCard;
+    public ShoppingCartCouponServiceImpl(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 
     @Override
     public void applyCoupon(Coupon coupon) {
-        double total = shoppingCard.getTotalAmountAfterDiscounts();
+        double total = shoppingCart.getTotalAmountAfterDiscounts();
         double couponDiscount = 0;
         if (total > coupon.getMinAmount()) {
             if (coupon.getDiscountType().equals(DiscountType.Amount))
@@ -22,9 +22,9 @@ public class ShoppingCardCouponServiceImpl implements ShoppingCardCouponService 
             else if (coupon.getDiscountType().equals(DiscountType.Rate))
                 couponDiscount = total * (coupon.getDiscount() / 100);
         }
-        if (shoppingCard.getTotalAmountAfterDiscounts() - couponDiscount < 0)
+        if (shoppingCart.getTotalAmountAfterDiscounts() - couponDiscount < 0)
             throw new CouponDiscountOverflowException();
         else
-            shoppingCard.setCouponDiscount(shoppingCard.getCouponDiscount() + couponDiscount);
+            shoppingCart.setCouponDiscount(shoppingCart.getCouponDiscount() + couponDiscount);
     }
 }
