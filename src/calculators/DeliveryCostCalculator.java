@@ -1,9 +1,9 @@
 package calculators;
 
 
-import modals.ShoppingCard;
+import models.ShoppingCart;
 
 public interface DeliveryCostCalculator {
-  
-      public double calculateFor(ShoppingCard shoppingCard);
+
+    public double calculateFor(ShoppingCart shoppingCart);
 }

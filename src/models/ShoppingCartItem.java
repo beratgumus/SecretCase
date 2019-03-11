@@ -1,12 +1,12 @@
-package modals;
+package models;
 
 
-public class ShoppingCardItem {
+public class ShoppingCartItem {
 
     private Product product;
     private int quantity;
 
-    public ShoppingCardItem(Product product, int quantity) {
+    public ShoppingCartItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
     }

@@ -1,18 +1,23 @@
-package modals;
+package models;
 
 
-public class Campaign {
-    private Category category;
+public class Coupon {
+    private int minAmount;
     private double discount;
-    private int amount;
     private DiscountType discountType;
 
-    public Category getCategory() {
-        return category;
+    public Coupon(int minAmount, double discount, DiscountType discountType) {
+        this.minAmount = minAmount;
+        this.discount = discount;
+        this.discountType = discountType;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public int getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(int minAmount) {
+        this.minAmount = minAmount;
     }
 
     public double getDiscount() {
@@ -23,14 +28,6 @@ public class Campaign {
         this.discount = discount;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
     public DiscountType getDiscountType() {
         return discountType;
     }
@@ -38,4 +35,6 @@ public class Campaign {
     public void setDiscountType(DiscountType discountType) {
         this.discountType = discountType;
     }
+
+
 }

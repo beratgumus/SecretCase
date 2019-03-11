@@ -1,7 +1,7 @@
 package calculators;
 
 
-import modals.ShoppingCard;
+import models.ShoppingCart;
 
 import java.util.stream.Collectors;
 
@@ -19,16 +19,16 @@ public class DeliveryCostCalculatorImpl implements DeliveryCostCalculator {
 
 
     @Override
-    public double calculateFor(ShoppingCard shoppingCard) {
-        return getDeliveryCost(shoppingCard) + getProductCost(shoppingCard) + fixedCost;
+    public double calculateFor(ShoppingCart shoppingCart) {
+        return getDeliveryCost(shoppingCart) + getProductCost(shoppingCart) + fixedCost;
     }
 
-    private double getProductCost(ShoppingCard shoppingCard) {
-        return shoppingCard.getItems().size() * costPerProduct;
+    private double getProductCost(ShoppingCart shoppingCart) {
+        return shoppingCart.getItems().size() * costPerProduct;
     }
 
-    private double getDeliveryCost(ShoppingCard shoppingCard) {
-        return shoppingCard.getItems().stream()
+    private double getDeliveryCost(ShoppingCart shoppingCart) {
+        return shoppingCart.getItems().stream()
                 .map(shoppingCardItem ->
                         shoppingCardItem.getProduct()
                                 .getCategory())

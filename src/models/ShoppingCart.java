@@ -1,14 +1,15 @@
-package modals;
+package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingCard {
-    private List<ShoppingCardItem> items;
+public class ShoppingCart {
+    private List<ShoppingCartItem> items = new ArrayList<>();
     private double couponDiscount;
     private double campaignDiscount;
     private double total;
 
-    public List<ShoppingCardItem> getItems() {
+    public List<ShoppingCartItem> getItems() {
         return items;
     }
 
@@ -20,7 +21,7 @@ public class ShoppingCard {
         this.total = total;
     }
 
-    public void setItems(List<ShoppingCardItem> items) {
+    public void setItems(List<ShoppingCartItem> items) {
         this.items = items;
     }
 
